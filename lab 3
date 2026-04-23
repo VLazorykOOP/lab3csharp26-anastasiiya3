@@ -1,0 +1,252 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace LabWork3
+{
+    // Завдання 1: Клас для прямокутних трикутників
+    class ATriangle
+    {
+        // Захищені поля
+        protected int a; // катет 1
+        protected int b; // катет 2
+        protected int c; // колір трикутника
+
+        // Властивості для доступу до сторін (читання та запис)
+        public int A
+        {
+            get { return a; }
+            set 
+            { 
+                if (value > 0)
+                    a = value;
+                else
+                    throw new ArgumentException("Катет має бути додатним");
+            }
+        }
+
+        public int B
+        {
+            get { return b; }
+            set
+            {
+                if (value > 0)
+                    b = value;
+                else
+                    throw new ArgumentException("Катет має бути додатним");
+            }
+        }
+
+        public int Color
+        {
+            get { return c; }
+            set { c = value; }
+        }
+
+        // Конструктор
+        public ATriangle(int a, int b, int color)
+        {
+            this.a = a;
+            this.b = b;
+            this.c = color;
+        }
+
+        // Метод для виведення довжин сторін
+        public void PrintSides()
+        {
+            double hypotenuse = Math.Sqrt(a * a + b * b);
+            Console.WriteLine($"Катети: {a}, {b}, Гіпотенуза: {hypotenuse:F2}");
+        }
+
+        // Метод для розрахунку периметра
+        public double CalculatePerimeter()
+        {
+            double hypotenuse = Math.Sqrt(a * a + b * b);
+            return a + b + hypotenuse;
+        }
+
+        // Метод для розрахунку площі
+        public double CalculateArea()
+        {
+            return (a * b) / 2.0;
+        }
+
+        // Метод перевірки на рівнобедреність
+        public bool IsIsosceles()
+        {
+            return a == b;
+        }
+
+        // Метод для виведення повної інформації про трикутник
+        public void PrintInfo()
+        {
+            Console.WriteLine($"Трикутник: a={a}, b={b}, колір={c}, площа={CalculateArea():F2}, периметр={CalculatePerimeter():F2}, рівнобедрений={(IsIsosceles() ? "Так" : "Ні")}");
+        }
+    }
+
+    // Завдання 2: Ієрархія класів
+    abstract class BaseClass
+    {
+        public abstract void Show();
+    }
+
+    class Toy : BaseClass
+    {
+        public string Name { get; set; }
+        public int MinAge { get; set; }
+        public string Material { get; set; }
+
+        public Toy(string name, int minAge, string material)
+        {
+            Name = name;
+            MinAge = minAge;
+            Material = material;
+        }
+
+        public override void Show()
+        {
+            Console.WriteLine($"Іграшка: {Name}, Мінімальний вік: {MinAge}, Матеріал: {Material}");
+        }
+    }
+
+    class Product : BaseClass
+    {
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Manufacturer { get; set; }
+
+        public Product(string name, double price, string manufacturer)
+        {
+            Name = name;
+            Price = price;
+            Manufacturer = manufacturer;
+        }
+
+        public override void Show()
+        {
+            Console.WriteLine($"Продукт: {Name}, Ціна: {Price} грн, Виробник: {Manufacturer}");
+        }
+    }
+
+    class Goods : BaseClass
+    {
+        public string Name { get; set; }
+        public double Weight { get; set; }
+        public string Category { get; set; }
+
+        public Goods(string name, double weight, string category)
+        {
+            Name = name;
+            Weight = weight;
+            Category = category;
+        }
+
+        public override void Show()
+        {
+            Console.WriteLine($"Товар: {Name}, Вага: {Weight} кг, Категорія: {Category}");
+        }
+    }
+
+    class DairyProduct : Product
+    {
+        public double FatContent { get; set; }
+        public DateTime ExpirationDate { get; set; }
+
+        public DairyProduct(string name, double price, string manufacturer, double fatContent, DateTime expirationDate)
+            : base(name, price, manufacturer)
+        {
+            FatContent = fatContent;
+            ExpirationDate = expirationDate;
+        }
+
+        public override void Show()
+        {
+            Console.WriteLine($"Молочний продукт: {Name}, Ціна: {Price} грн, Виробник: {Manufacturer}, Жирність: {FatContent}%, Термін придатності: {ExpirationDate.ToShortDateString()}");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.WriteLine("=== ЗАВДАННЯ 1: ПРЯМОКУТНІ ТРИКУТНИКИ ===\n");
+
+            // Створення масиву трикутників
+            ATriangle[] triangles = new ATriangle[]
+            {
+                new ATriangle(3, 4, 1),
+                new ATriangle(5, 5, 2),
+                new ATriangle(6, 8, 1),
+                new ATriangle(7, 7, 3),
+                new ATriangle(9, 12, 2),
+                new ATriangle(4, 4, 1)
+            };
+
+            Console.WriteLine("Всі трикутники:");
+            foreach (var t in triangles)
+                t.PrintInfo();
+
+            // Впорядкування за кольорами
+            var sortedByColor = triangles.OrderBy(t => t.Color).ToArray();
+            Console.WriteLine("\n--- Трикутники впорядковані за кольорами ---");
+            foreach (var t in sortedByColor)
+                t.PrintInfo();
+
+            // Впорядкування за площею
+            var sortedByArea = triangles.OrderBy(t => t.CalculateArea()).ToArray();
+            Console.WriteLine("\n--- Трикутники впорядковані за площею ---");
+            foreach (var t in sortedByArea)
+                t.PrintInfo();
+
+            // Впорядкування за периметром
+            var sortedByPerimeter = triangles.OrderBy(t => t.CalculatePerimeter()).ToArray();
+            Console.WriteLine("\n--- Трикутники впорядковані за периметром ---");
+            foreach (var t in sortedByPerimeter)
+                t.PrintInfo();
+
+            // Підрахунок рівнобедрених трикутників
+            int isoscelesCount = triangles.Count(t => t.IsIsosceles());
+            Console.WriteLine($"\nКількість рівнобедрених трикутників: {isoscelesCount}");
+
+            // Тестування властивостей
+            Console.WriteLine("\n--- Тестування властивостей ---");
+            ATriangle testTriangle = new ATriangle(2, 3, 1);
+            testTriangle.PrintInfo();
+            testTriangle.A = 5;
+            testTriangle.B = 12;
+            testTriangle.Color = 5;
+            Console.WriteLine("Після зміни значень:");
+            testTriangle.PrintInfo();
+
+            Console.WriteLine("\n\n=== ЗАВДАННЯ 2: ІЄРАРХІЯ КЛАСІВ ===\n");
+
+            // Створення масиву базового класу
+            BaseClass[] items = new BaseClass[6];
+
+            // Функція наповнення масиву різними об'єктами
+            FillArray(items);
+
+            // Виведення масиву (без сортування)
+            Console.WriteLine("Всі об'єкти:");
+            foreach (var item in items)
+                item?.Show();
+
+            // Виведення масиву впорядкованого за типами об'єктів
+            Console.WriteLine("\n--- Масив впорядкований за типами об'єктів ---");
+            var sortedByType = items.OrderBy(item => item.GetType().Name).ToArray();
+            foreach (var item in sortedByType)
+                item?.Show();
+        }
+
+        static void FillArray(BaseClass[] array)
+        {
+            array[0] = new Toy("Лялька", 3, "пластик");
+            array[1] = new Product("Хліб", 25.50, "Млин");
+            array[2] = new Goods("Стіл", 15.0, "меблі");
+            array[3] = new DairyProduct("Молоко", 32.00, "Селянське", 2.5, new DateTime(2024, 12, 20));
+            array[4] = new Toy("Машинка", 5, "метал");
+            array[5] = new DairyProduct("Сир", 120.00, "Ферма", 9.0, new DateTime(2024, 12, 25));
+        }
+    }
+}
